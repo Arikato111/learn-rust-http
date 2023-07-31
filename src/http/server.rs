@@ -1,7 +1,11 @@
+use crate::http::Request;
 use crate::http::Result;
 use std::io::Read;
 use std::net::TcpListener;
 use std::str;
+
+#[derive(std::fmt::Debug)]
+
 pub struct Server {
     addr: String,
 }
@@ -18,7 +22,17 @@ impl Server {
             let mut stream = stream?;
             let mut buf: [u8; 1024] = [0; 1024];
             stream.read(&mut buf)?;
-            let request = str::from_utf8(&buf)?;
+            let request = Request::try_from(&buf[..])?;
+            println!("{:#?}", request);
+
+            match request.method() {
+                crate::http::Method::GET => match request.path().as_str() {
+                    "/" => {}
+                    "/hello" => {}
+                    _ => {}
+                },
+                _ => {}
+            }
         }
 
         Ok(())
