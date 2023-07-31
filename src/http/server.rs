@@ -1,8 +1,10 @@
+use crate::http::response;
+use crate::http::HttpStatus;
 use crate::http::Request;
+use crate::http::Response;
 use crate::http::Result;
 use std::io::Read;
 use std::net::TcpListener;
-use std::str;
 
 #[derive(std::fmt::Debug)]
 
@@ -25,14 +27,16 @@ impl Server {
             let request = Request::try_from(&buf[..])?;
             println!("{:#?}", request);
 
-            match request.method() {
+            let response: Response = match request.method() {
                 crate::http::Method::GET => match request.path().as_str() {
-                    "/" => {}
-                    "/hello" => {}
-                    _ => {}
+                    "/" => Response::new(HttpStatus::OK, Some("home".to_string())),
+                    "/hello" => Response::new(HttpStatus::OK, Some("Hello".to_string())),
+
+                    _ => Response::new(HttpStatus::NotFound, None),
                 },
-                _ => {}
-            }
+                _ => Response::new(HttpStatus::NotFound, None),
+            };
+            response.send(&mut stream)?
         }
 
         Ok(())
