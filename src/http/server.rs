@@ -1,4 +1,3 @@
-use crate::http::response;
 use crate::http::HttpStatus;
 use crate::http::Request;
 use crate::http::Response;
