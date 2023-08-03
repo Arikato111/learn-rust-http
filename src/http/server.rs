@@ -1,3 +1,4 @@
+use crate::http::api;
 use crate::http::HttpStatus;
 use crate::http::Request;
 use crate::http::Response;
@@ -28,12 +29,28 @@ impl Server {
 
             let response: Response = match request.method() {
                 crate::http::Method::GET => match request.path().as_str() {
-                    "/" => Response::new(HttpStatus::OK, Some("home".to_string())),
-                    "/hello" => Response::new(HttpStatus::OK, Some("Hello".to_string())),
+                    "/api/" => api::index(),
+                    "/api/hello" => api::hello(),
+                    "/" => {
+                        let get_body = include_str!("../web/index.html");
+                        // get web page from web/index.html
+                        Response::new(HttpStatus::OK, Some(get_body.to_string()))
+                    }
+                    "/about" => Response::new(
+                        HttpStatus::OK,
+                        // get error page from web/404.html
+                        Some(include_str!("../web/about.html").to_string()),
+                    ),
 
-                    _ => Response::new(HttpStatus::NotFound, None),
+                    _ => Response::new(
+                        HttpStatus::NotFound,
+                        Some(include_str!("../web/404.html").to_string()),
+                    ),
                 },
-                _ => Response::new(HttpStatus::NotFound, None),
+                _ => Response::new(
+                    HttpStatus::NotFound,
+                    Some(include_str!("../web/404.html").to_string()),
+                ),
             };
             response.send(&mut stream)?
         }

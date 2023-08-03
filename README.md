@@ -15,4 +15,5 @@ learn rust programming to create http server for back-end
 
 ## packages and tools
 
-- it only use standard libraries
+- Standard libraries
+- [serde_json](https://docs.rs/serde_json/latest/serde_json/)

@@ -1,6 +1,8 @@
 pub mod error;
 pub use error::Error;
 
+pub mod api;
+
 pub mod server;
 pub use server::Server;
 
